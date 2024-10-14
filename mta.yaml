@@ -1,0 +1,124 @@
+_schema-version: 3.3.0
+ID: manish
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: manish-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: uaa_manish
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+- name: manish-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: manish-destination-service
+    parameters:
+      content-target: true
+  - name: manish_html_repo_host
+    parameters:
+      service-key:
+        name: manish_html_repo_host-key
+  - name: uaa_manish
+    parameters:
+      service-key:
+        name: uaa_manish-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: manish_router_manish_html_repo_host
+          ServiceInstanceName: manish-html5-app-host-service
+          ServiceKeyName: manish_html_repo_host-key
+          sap.cloud.service: manish-router
+        - Authentication: OAuth2UserTokenExchange
+          Name: manish_router_uaa_manish
+          ServiceInstanceName: manish-xsuaa-service
+          ServiceKeyName: uaa_manish-key
+          sap.cloud.service: manish-router
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: manish-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: manish_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - manishtest.zip
+      name: manishtest
+      target-path: resources/
+- name: manishtest
+  type: html5
+  path: app/manishtest
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: manish-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: manish-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: manish-destination-service
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: manish_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: manish-html5-app-host-service
+    service-plan: app-host
+- name: uaa_manish
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: manish-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production
