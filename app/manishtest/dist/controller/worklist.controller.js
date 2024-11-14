@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/Controller"],function(t){"use strict";return t.extend("manishtest.controller.worklist",{onInit:function(){},fetchNorthwindData:function(){var t=this.getOwnerComponent().getManifestEntry("/sap.app/id");var n=t.replaceAll(".","/");var e=jQuery.sap.getModulePath(n);$.ajax({type:"GET",url:e+"/northwind/V4/Northwind/Northwind.svc/Products",success:function({value:t}){console.log(t)}})}})});
+//# sourceMappingURL=worklist.controller.js.map

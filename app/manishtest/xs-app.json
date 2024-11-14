@@ -11,8 +11,8 @@
     },
     {
       "source": "^/northwind/(.*)$",
-      "target": "/northwind/$1",
-      "destination": "Northwind",
+      "target": "/$1",
+      "destination": "northwind",
       "authenticationType": "none",
       "csrfProtection": false
     },

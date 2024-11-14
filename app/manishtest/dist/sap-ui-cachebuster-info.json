@@ -1,0 +1,22 @@
+{
+  "index.html": 1728899568198,
+  "controller/App.controller.js": 1728899568206,
+  "controller/worklist.controller.js": 1731577724549,
+  "model/models.js": 1728899568202,
+  "manifest.json": 1731579408776,
+  "Component.js": 1728899568194,
+  "Component-dbg.js": 1728899568194,
+  "Component.js.map": 1731579409018,
+  "controller/worklist-dbg.controller.js": 1731577724549,
+  "controller/worklist.controller.js.map": 1731579409024,
+  "model/models-dbg.js": 1728899568202,
+  "model/models.js.map": 1731579409023,
+  "controller/App-dbg.controller.js": 1728899568206,
+  "controller/App.controller.js.map": 1731579409023,
+  "Component-preload.js": 1731579409174,
+  "Component-preload.js.map": 1731579409174,
+  "view/worklist.view.xml": 1728899908584,
+  "view/App.view.xml": 1728899568206,
+  "css/style.css": 1728899568206,
+  "i18n/i18n.properties": 1728899568202
+}
